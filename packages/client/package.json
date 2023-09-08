@@ -19,9 +19,11 @@
     "@latticexyz/store-sync": "2.0.0-next.7",
     "@latticexyz/utils": "2.0.0-next.7",
     "@latticexyz/world": "2.0.0-next.7",
+    "@vitejs/plugin-vue": "^4.3.4",
     "contracts": "workspace:*",
     "rxjs": "7.5.5",
-    "viem": "1.6.0"
+    "viem": "1.6.0",
+    "vue": "^3.3.4"
   },
   "devDependencies": {
     "vite": "^4.2.1",

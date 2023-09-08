@@ -1,3 +1,5 @@
+import { createApp } from 'vue'
+import App from './App.vue'
 import { setup } from "./mud/setup";
 import mudConfig from "contracts/mud.config";
 
@@ -35,3 +37,5 @@ if (import.meta.env.DEV) {
     recsWorld: network.world,
   });
 }
+
+createApp(App).mount('#app')
