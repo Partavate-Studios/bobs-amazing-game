@@ -21,6 +21,7 @@
     "@latticexyz/world": "2.0.0-next.7",
     "@vitejs/plugin-vue": "^4.3.4",
     "contracts": "workspace:*",
+    "eslint-plugin-vue": "^9.17.0",
     "rxjs": "7.5.5",
     "viem": "1.6.0",
     "vue": "^3.3.4"
