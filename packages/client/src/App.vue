@@ -1,7 +1,11 @@
-<script lang="ts">
+<script setup lang="ts">
+import svgContainer from './svgContainer.vue'
+import btn from './components/button-basic.svg.vue'
 import { setup } from "./mud/setup"
 import mudConfig from "contracts/mud.config";
+</script>
 
+<script lang="ts">
 const {
   components,
   systemCalls: { increment },
@@ -48,7 +52,17 @@ export default {
 
 
 <template>
-    <p>Vue Counter</p>
-    <button @click="update()">Button</button>
-    {{ counter }}
+  <svgContainer>
+    <text transform="translate(0 -200)" fill="#000000">Counter</text>
+    <g fill="#440088">
+    <btn      
+      :width="520"
+      :height="80"
+      text="Increment"
+      @click="update()"
+      transform="translate(0 -100)"
+    />
+    </g>
+    <text fill="#000000">{{ counter }}</text>
+  </svgContainer>
 </template>
