@@ -1,5 +1,15 @@
 <script setup lang="ts">
 import svgContainer from './svgContainer.vue'
+import { useMap } from './stores/worldmap'
+import background from './components/background.svg.vue'
+import bob from './components/bob.svg.vue'
+import crate from './components/crate.svg.vue'
+import empty from './components/empty.svg.vue'
+import grass from './components/grass.svg.vue'
+import grassColor from './components/grass-color.svg.vue'
+import water from './components/water.svg.vue'
+import wall from './components/wall.svg.vue'
+import bush from './components/bush.svg.vue'
 import btn from './components/button-basic.svg.vue'
 import { setup } from "./mud/setup"
 import mudConfig from "contracts/mud.config";
@@ -32,7 +42,8 @@ if (import.meta.env.DEV) {
 export default {
   data() {
     return {
-      counter: 0
+      counter: 0,
+      map: useMap()
     }
   },
   methods: {
@@ -45,6 +56,7 @@ export default {
         const [nextValue, prevValue] = update.value;
         this.counter = nextValue?.value ?? 0
     });
+    this.map.init()
   }    
 }
 
@@ -53,6 +65,9 @@ export default {
 
 <template>
   <svgContainer>
+    <background />
+
+    <g transform="scale(0.2) translate(-3500 -2000)">
     <text transform="translate(0 -200)" fill="#000000">Counter</text>
     <g fill="#440088">
     <btn      
@@ -64,5 +79,40 @@ export default {
     />
     </g>
     <text fill="#000000">{{ counter }}</text>
+</g>
+    <g transform="scale(0.15)">
+
+
+      <g v-for="(row, x) in map.ground">
+            <g v-for="(tile, y) in row">
+                <g :transform="'translate(' + 
+                        (((x - y) * 500)) 
+                        + ' ' + 
+                        (((x + y ) * 250) - 2500) 
+                        + ')'"
+                >
+                  <grass v-if="tile == 2" />
+                  <water v-if="tile == 3" />
+                </g>
+            </g>
+        </g>
+
+      <g v-for="bobject in map.bobjects">
+        <g :transform="'translate(' + 
+                (((bobject.x - bobject.y) * 500)) 
+                + ' ' + 
+                (((bobject.x + bobject.y ) * 250) - 2500) 
+                + ')'"
+        >
+          <wall v-if="bobject.type == 6" />
+          <crate v-if="bobject.type == 5" />
+          <water v-if="bobject.type == 3" />
+          <grass v-if="bobject.type == 2" />
+          <bush v-if="bobject.type == 1" />
+          <bob v-if="bobject.type == 0" />
+        </g>
+      </g>
+
+    </g>
   </svgContainer>
 </template>
