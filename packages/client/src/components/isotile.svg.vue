@@ -23,7 +23,7 @@ export default {
 
 
 <template>
-    <g :transform="'translate(' + 
+    <g class="slides" :transform="'translate(' + 
             (((x - y) * 500)) 
             + ' ' + 
             (((x + y ) * 250)) 
@@ -32,3 +32,6 @@ export default {
         <slot />
     </g>
 </template>
+
+<style scoped lang="scss">
+</style>

@@ -88,29 +88,29 @@ export default {
           </g>
         </g>
 
-        <g v-for="bobject in map.entitiesSorted">
+        <g v-for="bobject in map.entitiesSorted" :key="bobject.id">
           <isotile :x="bobject.x" :y="bobject.y">
-            <wall v-if="bobject.type == 6" />
-            <crate v-if="bobject.type == 5" />
-            <water v-if="bobject.type == 3" />
-            <grass v-if="bobject.type == 2" />
-            <bush v-if="bobject.type == 1" />
-            <bob v-if="bobject.type == 0" />
+            <wall v-if="bobject.sprite == 'wall'" />
+            <crate v-if="bobject.sprite == 'crate'" />
+            <water v-if="bobject.sprite == 'water'" />
+            <grass v-if="bobject.sprite == 'grass'" />
+            <bush v-if="bobject.sprite == 'bush'" />
+            <bob v-if="bobject.sprite == 'bob'" />
           </isotile>
         </g>
       </g>
     </g>
-    <g transform="translate(-450 -300)">
-      <rect x="-40" y="-40" rx="20" ry="20" width="80" height="80" fill="#6633aa" @click="map.movePlayerUp()" />
+    <g transform="translate(-450 -300) rotate(45)">
+      <rect x="-40" y="-80" rx="20" ry="20" width="80" height="80" fill="#6633aa" @click="map.movePlayerUp()" />
     </g>
-    <g transform="translate(450 -300)">
-      <rect x="-40" y="-40" rx="20" ry="20" width="80" height="80" fill="#6633aa" @click="map.movePlayerLeft()" />
+    <g transform="translate(450 -300) rotate(45)">
+      <rect x="-40" y="-80" rx="20" ry="20" width="80" height="80" fill="#6633aa" @click="map.movePlayerLeft()" />
     </g>
-    <g transform="translate(-450 300)">
-      <rect x="-40" y="-40" rx="20" ry="20" width="80" height="80" fill="#6633aa" @click="map.movePlayerRight()" />
+    <g transform="translate(-450 300) rotate(45)">
+      <rect x="-40" y="-80" rx="20" ry="20" width="80" height="80" fill="#6633aa" @click="map.movePlayerRight()" />
     </g>
-    <g transform="translate(450 300)">
-      <rect x="-40" y="-40" rx="20" ry="20" width="80" height="80" fill="#6633aa" @click="map.movePlayerDown()" />
+    <g transform="translate(450 300) rotate(45)">
+      <rect x="-40" y="-80" rx="20" ry="20" width="80" height="80" fill="#6633aa" @click="map.movePlayerDown()" />
     </g>
 
   </svgContainer>

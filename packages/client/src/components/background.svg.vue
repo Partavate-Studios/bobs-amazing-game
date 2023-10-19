@@ -16,8 +16,10 @@ export default {
 <template>
 <defs>
     <linearGradient id="bggradient" x1="50%" x2="50%" y1="0%" y2="100%">
-      <stop offset="10%" stop-color="#223322" />
-      <stop offset="80%" stop-color="#334433" />
+      <stop offset="0%" stop-color="#111118" />
+      <stop offset="5%" stop-color="#000000" />
+      <stop offset="95%" stop-color="#000000" />
+      <stop offset="100%" stop-color="#181111" />
     </linearGradient>
   </defs>
 

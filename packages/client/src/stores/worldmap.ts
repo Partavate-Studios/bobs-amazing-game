@@ -1,20 +1,21 @@
 import {defineStore} from 'pinia'
+import { useEntities } from './composables/entities.ts'
 
 export const useMap = defineStore('map', {
   state: () => {
     return {
-      size: 8,
+      entities: useEntities(),
+      size: 12 as number,
+      entityIdNonce: 0,
       ground: [] as number[][],
-      entities: [] as Bobject[],
-      playerEntity: 0 as number
+      playerEntity: null as null | string
     }
   },
   getters: {
     entitiesSorted():any[] {
-        return this.entities.concat().sort((a,b) => 
-          (a.x + a.y) - 
-          (b.x + b.y)
-        )
+      console.log('getting sorted')
+      //the concat forces a copy
+      return this.entities.getSprites()
     }
   },
   actions: {
@@ -26,82 +27,54 @@ export const useMap = defineStore('map', {
           this.ground[x][y] = 1;
         }
       }
-
+      //water example
       this.ground[3][4] = 2
+      this.ground[2][5] = 2
+      this.ground[2][4] = 2
+      this.ground[3][5] = 2
 
 
-      this.entities.push({
-        id: '',
-        type: 0,
-        x: 3,
-        y: 3,
-        attributes: []
-    }) - 1
+      //player
+      this.playerEntity = this.entities.spawn()
+      this.entities.addLocation(this.playerEntity, {x: 3, y: 3})
+      this.entities.addSprite(this.playerEntity, {sprite: 'bob'})
 
+      //edges
+      for (let x = 1; x < this.size - 1; x++) {
+        const u = this.entities.spawn()
+        this.entities.addLocation(u, {x: x, y:0})
+        this.entities.addSprite(u, {sprite: 'bush'})
 
-      for (let x = 0; x < this.size; x++) {
-        this.entities.push({
-          id: '',
-          type: 1,
-          x: parseInt(x),
-          y: parseInt(0),
-          attributes: []
-        })
-        this.entities.push({
-                id: '',
-                type: 1,
-                x: parseInt(0),
-                y: parseInt(x),
-                attributes: []
-            })
-        }
+        const d = this.entities.spawn()
+        this.entities.addLocation(d, {x: 0, y:x})
+        this.entities.addSprite(d, {sprite: 'bush'})
 
-        for (let x = 1; x < this.size; x++) {
-            this.entities.push({
-                id: '',
-                type: 1,
-                x: parseInt(x),
-                y: parseInt(this.size - 1),
-                attributes: []
-            })
-            this.entities.push({
-                id: '',
-                type: 1,
-                x: parseInt(this.size - 1),
-                y: parseInt(x),
-                attributes: []
-            })
-        }
-        this.entities.push({
-            id: '',
-            type: 5,
-            x: 3,
-            y: 2,
-            attributes: []
-        })
+        const l = this.entities.spawn()
+        this.entities.addLocation(l, {x: this.size - 1, y:x})
+        this.entities.addSprite(l, {sprite: 'bush'})
 
+        const r = this.entities.spawn()
+        this.entities.addLocation(r, {x: x, y: this.size -1})
+        this.entities.addSprite(r, {sprite: 'bush'})
+      }
 
-      },
-      movePlayerUp() {
-        this.entities[this.playerEntity].x -= 1;
-      },
-      movePlayerDown() {
-        this.entities[this.playerEntity].x += 1;
-      },
-      movePlayerLeft() {
-        this.entities[this.playerEntity].y -= 1;
-      },
-      movePlayerRight() {
-        this.entities[this.playerEntity].y += 1;
-      },
-    }
+      //example crate
+      const crate = this.entities.spawn()
+      this.entities.addLocation(crate, {x: 3, y: 2})
+      this.entities.addSprite(crate, {sprite: 'crate'})
+    },
+
+    movePlayerUp() {
+      this.entities.move(this.playerEntity,'u')
+    },
+    movePlayerDown() {
+      this.entities.move(this.playerEntity,'d')
+    },
+    movePlayerLeft() {
+      this.entities.move(this.playerEntity,'l')
+    },
+    movePlayerRight() {
+      this.entities.move(this.playerEntity,'r')
+    },
+  }
 })
-
-
-interface Bobject {
-    id: string,
-    type: number,
-    x: number,
-    y: number,
-    attributes: number[],
-}

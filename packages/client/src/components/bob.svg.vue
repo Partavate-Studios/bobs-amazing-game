@@ -26,7 +26,7 @@ export default {
       <stop offset="100%" stop-color="#000088" stop-opacity="1" />
     </radialGradient>
     <radialGradient id="bootGradient" cx="65%" cy="35%">
-      <stop offset="0%" stop-color="#ffffff" stop-opacity="1" />
+      <stop offset="0%" stop-color="#aa8800" stop-opacity="1" />
       <stop offset="30%" stop-color="#aa8800" stop-opacity="1" />
       <stop offset="95%" stop-color="#663300" stop-opacity="1" />
       <stop offset="100%" stop-color="#331100" stop-opacity="1" />
