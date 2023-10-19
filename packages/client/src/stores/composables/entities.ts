@@ -22,7 +22,6 @@ export function useEntities() {
     let sprites = []    
     for (const k in entities.value) {
       const entity = entities.value[k]
-      console.log('entity:', k) 
       if (entity.hasComponent('sprite')) {  
         const sprite = entity.getComponent('sprite')
         const location = entity.getComponent('location')      
@@ -34,7 +33,6 @@ export function useEntities() {
         })
       }
     }
-    console.log('done', sprites)
     return sprites.sort((a,b) =>
       (a.x + a.y) - (b.x + b.y)
     )
@@ -52,6 +50,24 @@ export function useEntities() {
       'location',
       data
     )
+  }
+
+  function checkForObjectInLocation(observedlocation:{}) {
+    console.log('checking for objects')
+    let objects = []
+    for (const k in entities.value) {
+      const entity = entities.value[k]  
+      if (entity.hasComponent('location')) {
+        const objectLocation = entity.getComponent('location')
+        if ((observedlocation.x == objectLocation.x) && (observedlocation.y == objectLocation.y)) {
+            console.log('location', objectLocation.y)
+            console.log('found', k)
+            objects.push(k)
+        }
+      }
+    }
+    console.log('objects', objects)
+    return objects
   }
 
   function move(id:string, direction:string) {
@@ -74,6 +90,14 @@ export function useEntities() {
         location.y++
         break
       }
+    }
+    const blockers = checkForObjectInLocation(location)
+    console.log('blockers', blockers)
+    for (const k in blockers) {
+      if (blockers[k] != id) {
+        move(blockers[k], direction)
+      }
+      console.log('BLOCKERS', entities.value[blockers[k]].value)
     }
     entities.value[id].updateComponent('location', location)
   }

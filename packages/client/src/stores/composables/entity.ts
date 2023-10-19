@@ -17,9 +17,7 @@ export function useEntity(id:string) {
   }
 
   function hasComponent(name:string):boolean {
-    console.log('has')
     for (const k in components.value) {
-      console.log('test', k)
       if (k == name) {
         return true
       }
