@@ -18,6 +18,10 @@ export function useEntities() {
     delete entities.value[id]
   }
 
+  /**
+   * gets a list of all entities with sprites and orders them by y
+   * @returns array
+   */
   function getSprites() {
     let sprites = []    
     for (const k in entities.value) {
@@ -52,6 +56,18 @@ export function useEntities() {
     )
   }
 
+  function addSolid(id:string, data:{}) {
+    entities.value[id].addComponent(
+      'solid',
+      data
+    )
+  }
+
+  /**
+   * Returns all objects in a particular location
+   * @param observedlocation {x: y:}
+   * @returns array
+   */
   function checkForObjectInLocation(observedlocation:{}) {
     console.log('checking for objects')
     let objects = []
@@ -70,36 +86,51 @@ export function useEntities() {
     return objects
   }
 
-  function move(id:string, direction:string) {
+  function move(id:string, direction:string, canPush = false) {
+    console.log('moving: ' + direction)
+    if (!entities.value[id].hasComponent('solid')) return
+    console.log('a')
     const location = entities.value[id].getComponent('location')
+    console.log('b')
+    if (!location.movable) return
+    console.log('c')
+    let newblock = {
+      x: location.x,
+      y: location.y
+    }
     if (location == null) return
     switch(direction) {
       case 'u': {
-        location.x--
+        newblock.x--
         break
       }
       case 'd': {
-        location.x++
+        newblock.x++
         break
       }
       case 'l': {
-        location.y--
+        newblock.y--
         break
       }
       case 'r': {
-        location.y++
+        newblock.y++
         break
       }
     }
-    const blockers = checkForObjectInLocation(location)
-    console.log('blockers', blockers)
-    for (const k in blockers) {
-      if (blockers[k] != id) {
+    /** push blockers if we can */
+    let blockers
+    if (canPush) {
+      console.log('pushing')
+      let blockers = checkForObjectInLocation(newblock)
+      for (const k in blockers) {
         move(blockers[k], direction)
       }
-      console.log('BLOCKERS', entities.value[blockers[k]].value)
     }
-    entities.value[id].updateComponent('location', location)
+    /** see if we're still stuck */
+    blockers = checkForObjectInLocation(newblock)
+    if (blockers.length == 0) {
+      entities.value[id].updateComponent('location', newblock)
+    }
   }
 
   return {
@@ -108,6 +139,7 @@ export function useEntities() {
     expunge: expunge,
     addLocation: addLocation,
     addSprite: addSprite,
+    addSolid: addSolid,
     getSprites: getSprites,
     move: move
   }

@@ -92,8 +92,6 @@ export default {
           <isotile :x="bobject.x" :y="bobject.y">
             <wall v-if="bobject.sprite == 'wall'" />
             <crate v-if="bobject.sprite == 'crate'" />
-            <water v-if="bobject.sprite == 'water'" />
-            <grass v-if="bobject.sprite == 'grass'" />
             <bush v-if="bobject.sprite == 'bush'" />
             <bob v-if="bobject.sprite == 'bob'" />
           </isotile>
@@ -110,8 +108,12 @@ export default {
       <rect x="-40" y="-80" rx="20" ry="20" width="80" height="80" fill="#6633aa" @click="map.movePlayerRight()" />
     </g>
     <g transform="translate(450 300) rotate(45)">
-      <rect x="-40" y="-80" rx="20" ry="20" width="80" height="80" fill="#6633aa" @click="map.movePlayerDown()" />
+      <rect x="-40" y="-80" rx="20" ry="20" width="80" height="80" fill="#6633aa" @click="map.movePlayerDown()"  />
     </g>
 
   </svgContainer>
 </template>
+
+<style>
+
+</style>

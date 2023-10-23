@@ -4,8 +4,8 @@ export function useEntity(id:string) {
     
   let components:any = ref({})
 
-  function addComponent(name:string, component:{}) {
-    components.value[name] = component  
+  function addComponent(name:string, data:{}) {
+    components.value[name] = data  
   }
 
   function removeComponent(name:string) {
@@ -26,9 +26,11 @@ export function useEntity(id:string) {
   }
  
   function updateComponent(name:string, data:{}) {
-    components.value[name] = data
+    for (const k in data) {
+      components.value[name][k] = data[k]
+    }
+    
   }
-
 
   return {
     id: id,

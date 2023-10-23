@@ -40,8 +40,8 @@ export default {
       font-size="48px">
       <defs>
         <radialGradient id="shadowGradient">
-          <stop offset="0%" stop-color="#000000" stop-opacity="0.5" />
-          <stop offset="75%" stop-color="#000000" stop-opacity="0.5" />
+          <stop offset="0%" stop-color="#000000" stop-opacity="0.4" />
+          <stop offset="75%" stop-color="#000000" stop-opacity="0.15" />
           <stop offset="100%" stop-color="#000000" stop-opacity="0" />
         </radialGradient>        
       </defs>

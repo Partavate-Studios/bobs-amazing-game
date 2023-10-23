@@ -52,7 +52,7 @@ export default {
 
   <g stroke-opacity="0.1">
     <g transform="translate(0 0)">
-      <ellipse cx="0" cy="50" rx="500" ry="200" stroke-width="0" stroke="#000000" fill="url(#shadowGradient)"
+      <ellipse cx="-40" cy="50" rx="500" ry="200" stroke-width="0" stroke="#000000" fill="url(#shadowGradient)"
         fill-opacity="1" />
     </g>
 

@@ -29,9 +29,14 @@ export default {
             (((x + y ) * 250)) 
             + ')'"
     >
+      <g class="rolling">
         <slot />
+      </g>
     </g>
 </template>
 
 <style scoped lang="scss">
+.slides {
+  transform: 10s linear;
+}
 </style>
