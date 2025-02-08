@@ -40,6 +40,7 @@ export default {
       fill="#ffffff"
       font-size="48px">
 
+      <g transform="translate(-200 -400)"><text>{{ Math.round(screen.mouseX) }} x {{ Math.round(screen.mouseY) }}</text></g>
       <slot />
 
 
