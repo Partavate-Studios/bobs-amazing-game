@@ -22,8 +22,8 @@ export const useScreen = defineStore('screen', {
     //used to preserve 16:9 or 9:16 window when scaling
     //also determines default resolution
     protectedBox: {
-      long: 1920,
-      short: 1200
+      long: 1600,
+      short: 900
     }
   }),
   actions: {

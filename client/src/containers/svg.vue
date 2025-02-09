@@ -37,10 +37,9 @@ export default {
       rendering="geometricPrecision"
       text-rendering="geometricPrecision"
       shape-rendering="geometricPrecision"
-      fill="#ffffff"
+      fill="#222288"
       font-size="48px">
 
-      <g transform="translate(-200 -400)"><text>{{ Math.round(screen.mouseX) }} x {{ Math.round(screen.mouseY) }}</text></g>
       <slot />
 
 
