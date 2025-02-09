@@ -1,4 +1,6 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { Direction } from "../stores/world"
+</script>
 
 <script lang="ts">
 export default {
@@ -16,7 +18,7 @@ export default {
     },
     direction: {
       type: String,
-      default: "down",
+      default: Direction.Down,
     },
   },
   computed: {
@@ -86,7 +88,7 @@ export default {
     fill-opacity="1"
   />
 
-  <g v-if="direction === 'up'">
+  <g v-if="direction === Direction.Up">
     <circle
       :class="evenMoveClass"
       cx="-32"
@@ -99,7 +101,7 @@ export default {
     />
   </g>
 
-  <g v-if="direction === 'right'">
+  <g v-if="direction === Direction.Right">
     <circle
       :class="evenMoveClass"
       cx="32"
@@ -112,7 +114,7 @@ export default {
     />
   </g>
 
-  <g v-if="direction === 'down' || direction === 'up'">
+  <g v-if="direction === Direction.Down || direction === Direction.Up">
     <g :class="evenMoveClass">
       <circle
         cx="30"
@@ -135,7 +137,7 @@ export default {
       />
     </g>
   </g>
-  <g v-if="direction === 'left' || direction === 'right'">
+  <g v-if="direction === Direction.Left || direction === Direction.Right">
     <g :class="evenMoveClass">
       <circle
         cx="-30"
@@ -168,7 +170,7 @@ export default {
     fill-opacity="1"
   />
 
-  <g v-if="direction === 'down' || direction === 'up'">
+  <g v-if="direction === Direction.Down || direction === Direction.Up">
     <ellipse
       :class="evenMoveClass"
       cx="-30"
@@ -214,7 +216,7 @@ export default {
     />
   </g>
 
-  <g v-if="direction === 'right' || direction === 'left'">
+  <g v-if="direction === Direction.Right || direction === Direction.Left">
     <ellipse
       :class="evenMoveClass"
       cx="30"
@@ -259,7 +261,7 @@ export default {
     />
   </g>
 
-  <g v-if="direction === 'down'">
+  <g v-if="direction === Direction.Down">
     <circle
       :class="evenMoveClass"
       cx="28"
@@ -293,7 +295,7 @@ export default {
     />
   </g>
 
-  <g v-if="direction === 'left'">
+  <g v-if="direction === Direction.Left">
     <circle
       :class="evenMoveClass"
       cx="-28"
