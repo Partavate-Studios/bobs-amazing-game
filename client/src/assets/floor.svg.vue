@@ -15,13 +15,19 @@ export default {
 </script>
 
 <template>
-  <g stroke="#007744" fill="#007744" stroke-width="1">
+  <g stroke="#383838" fill="#605858" stroke-width="1">
     <path d="M -64 0 L 0 -32 L 64 0 L 0 32 L -64 0 Z" />
   </g>
-  <g fill="#554400">
+
+  <g stroke="#303030" fill="#586058" stroke-width="1">
+    <path d="M -64 0 L -32 -16 L 0 0 L -32 16 L -64 0 Z" />
+    <path d="M 0 0 L 32 -16 L 64 0 L 32 16 L 0 0 Z" />
+  </g>
+
+  <g fill="#111111">
     <path d="M -64 0 L 0 32 L 0 64 L -64 32 L -64 0 Z" />
   </g>
-  <g fill="#665511">
+  <g fill="#222222">
     <path d="M 64 0 L 0 32 L 0 64 L 64 32 L 64 0 Z" />
   </g>
 </template>

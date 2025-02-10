@@ -3,6 +3,9 @@ import svgContainer from './containers/svg.vue'
 import { useRoute } from './stores/route.ts'
 import game from './scenes/game.svg.vue'
 import mainmenu from './scenes/mainmenu.svg.vue'
+import { useClock } from "./stores/clock.ts"
+const clock = useClock()
+clock.play()
 </script>
 
 <script lang="ts">
@@ -46,6 +49,6 @@ body {
 <style lang="scss">
 //Default Theme
 :root {
-  --color-bg: #000000;
+  --color-bg: #101010;
 }
 </style>

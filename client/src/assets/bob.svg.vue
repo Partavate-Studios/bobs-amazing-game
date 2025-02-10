@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Direction } from "../stores/world"
+import { Direction } from "../stores/world";
 </script>
 
 <script lang="ts">
@@ -31,6 +31,12 @@ export default {
     evenMoveClass() {
       if (this.walking) {
         return "evenmove";
+      }
+      return "";
+    },
+    doubleSpeedMoveClass() {
+      if (this.walking) {
+        return "doublespeedmove";
       }
       return "";
     },
@@ -87,46 +93,94 @@ export default {
     fill="url(#shadowGradient)"
     fill-opacity="1"
   />
-
-  <g v-if="direction === Direction.Up">
-    <circle
-      :class="evenMoveClass"
-      cx="-32"
-      cy="-50"
-      r="10"
-      stroke-width="1"
-      stroke="#000088"
-      fill="url(#eyeGradientLeft)"
-      fill-opacity="1"
-    />
-  </g>
-
-  <g v-if="direction === Direction.Right">
-    <circle
-      :class="evenMoveClass"
-      cx="32"
-      cy="-50"
-      r="10"
-      stroke-width="1"
-      stroke="#000088"
-      fill="url(#eyeGradientRight)"
-      fill-opacity="1"
-    />
-  </g>
-
-  <g v-if="direction === Direction.Down || direction === Direction.Up">
-    <g :class="evenMoveClass">
+  <g>
+    <g v-if="direction === Direction.Up">
       <circle
-        cx="30"
-        cy="-15"
-        r="8"
+        :class="evenMoveClass"
+        cx="-32"
+        cy="-50"
+        r="10"
         stroke-width="1"
-        stroke="#000000"
-        fill="url(#bobGradient)"
+        stroke="#000088"
+        fill="url(#eyeGradientLeft)"
         fill-opacity="1"
       />
+    </g>
+
+    <g v-if="direction === Direction.Right">
+      <circle
+        :class="evenMoveClass"
+        cx="32"
+        cy="-50"
+        r="10"
+        stroke-width="1"
+        stroke="#000088"
+        fill="url(#eyeGradientRight)"
+        fill-opacity="1"
+      />
+    </g>
+
+    <g v-if="direction === Direction.Down || direction === Direction.Up">
+      <g :class="evenMoveClass">
+        <ellipse
+          :cx="30"
+          cy="-5"
+          rx="10"
+          ry="8"
+          stroke-width="1"
+          stroke="#000000"
+          fill="url(#bootGradient)"
+          fill-opacity="1"
+        />
+        <circle
+          cx="30"
+          cy="-15"
+          r="8"
+          stroke-width="1"
+          stroke="#000000"
+          fill="url(#bobGradient)"
+          fill-opacity="1"
+        />
+      </g>
+    </g>
+    <g v-if="direction === Direction.Left || direction === Direction.Right">
+      <g :class="evenMoveClass">
+        <ellipse
+          :cx="-30"
+          cy="-5"
+          rx="10"
+          ry="8"
+          stroke-width="1"
+          stroke="#000000"
+          fill="url(#bootGradient)"
+          fill-opacity="1"
+        />
+        <circle
+          cx="-30"
+          cy="-15"
+          r="8"
+          stroke-width="1"
+          stroke="#000000"
+          fill="url(#bobGradient)"
+          fill-opacity="1"
+        />
+      </g>
+    </g>
+
+    <circle
+      :class="doubleSpeedMoveClass"
+      cy="-35"
+      r="40"
+      stroke-width="1"
+      stroke="#000000"
+      fill="url(#bobGradient)"
+      fill-opacity="1"
+    />
+
+    <g v-if="direction === Direction.Down || direction === Direction.Up">
       <ellipse
-        :cx="30"
+        :class="evenMoveClass"
+        cx="-30"
         cy="-5"
         rx="10"
         ry="8"
@@ -135,11 +189,8 @@ export default {
         fill="url(#bootGradient)"
         fill-opacity="1"
       />
-    </g>
-  </g>
-  <g v-if="direction === Direction.Left || direction === Direction.Right">
-    <g :class="evenMoveClass">
       <circle
+        :class="evenMoveClass"
         cx="-30"
         cy="-15"
         r="8"
@@ -149,7 +200,33 @@ export default {
         fill-opacity="1"
       />
       <ellipse
-        :cx="-30"
+        :class="oddMoveClass"
+        cx="-2"
+        cy="7"
+        rx="11"
+        ry="8"
+        stroke-width="1"
+        stroke="#000000"
+        fill="url(#bootGradient)"
+        fill-opacity="1"
+      />
+
+      <circle
+        :class="oddMoveClass"
+        cx="-2"
+        cy="-3"
+        r="8"
+        stroke-width="1"
+        stroke="#000000"
+        fill="url(#bobGradient)"
+        fill-opacity="1"
+      />
+    </g>
+
+    <g v-if="direction === Direction.Right || direction === Direction.Left">
+      <ellipse
+        :class="evenMoveClass"
+        cx="30"
         cy="-5"
         rx="10"
         ry="8"
@@ -158,175 +235,106 @@ export default {
         fill="url(#bootGradient)"
         fill-opacity="1"
       />
+      <circle
+        :class="evenMoveClass"
+        cx="30"
+        cy="-15"
+        r="8"
+        stroke-width="1"
+        stroke="#000000"
+        fill="url(#bobGradient)"
+        fill-opacity="1"
+      />
+      <ellipse
+        :class="oddMoveClass"
+        cx="2"
+        cy="7"
+        rx="11"
+        ry="8"
+        stroke-width="1"
+        stroke="#000000"
+        fill="url(#bootGradient)"
+        fill-opacity="1"
+      />
+      <circle
+        :class="oddMoveClass"
+        cx="2"
+        cy="-3"
+        r="8"
+        stroke-width="1"
+        stroke="#000000"
+        fill="url(#bobGradient)"
+        fill-opacity="1"
+      />
     </g>
-  </g>
 
-  <circle
-    cy="-35"
-    r="40"
-    stroke-width="1"
-    stroke="#000000"
-    fill="url(#bobGradient)"
-    fill-opacity="1"
-  />
+    <g v-if="direction === Direction.Down">
+      <circle
+        :class="evenMoveClass"
+        cx="28"
+        cy="-45"
+        r="9"
+        stroke-width="1"
+        stroke="#000000"
+        fill="url(#eyeGradientRight)"
+        fill-opacity="1"
+      />
 
-  <g v-if="direction === Direction.Down || direction === Direction.Up">
-    <ellipse
-      :class="evenMoveClass"
-      cx="-30"
-      cy="-5"
-      rx="10"
-      ry="8"
-      stroke-width="1"
-      stroke="#000000"
-      fill="url(#bootGradient)"
-      fill-opacity="1"
-    />
-    <circle
-      :class="evenMoveClass"
-      cx="-30"
-      cy="-15"
-      r="8"
-      stroke-width="1"
-      stroke="#000000"
-      fill="url(#bobGradient)"
-      fill-opacity="1"
-    />
-    <ellipse
-      :class="oddMoveClass"
-      cx="-2"
-      cy="7"
-      rx="11"
-      ry="8"
-      stroke-width="1"
-      stroke="#000000"
-      fill="url(#bootGradient)"
-      fill-opacity="1"
-    />
+      <circle
+        cx="22"
+        cy="-30"
+        r="10"
+        stroke-width="1"
+        stroke="#0000ff"
+        fill="url(#bobGradient)"
+        fill-opacity="1"
+      />
 
-    <circle
-      :class="oddMoveClass"
-      cx="-2"
-      cy="-3"
-      r="8"
-      stroke-width="1"
-      stroke="#000000"
-      fill="url(#bobGradient)"
-      fill-opacity="1"
-    />
-  </g>
+      <circle
+        :class="oddMoveClass"
+        cx="8"
+        cy="-40"
+        r="9"
+        stroke-width="1"
+        stroke="#000000"
+        fill="url(#eyeGradientRight)"
+        fill-opacity="1"
+      />
+    </g>
 
-  <g v-if="direction === Direction.Right || direction === Direction.Left">
-    <ellipse
-      :class="evenMoveClass"
-      cx="30"
-      cy="-5"
-      rx="10"
-      ry="8"
-      stroke-width="1"
-      stroke="#000000"
-      fill="url(#bootGradient)"
-      fill-opacity="1"
-    />
-    <circle
-      :class="evenMoveClass"
-      cx="30"
-      cy="-15"
-      r="8"
-      stroke-width="1"
-      stroke="#000000"
-      fill="url(#bobGradient)"
-      fill-opacity="1"
-    />
-    <ellipse
-      :class="oddMoveClass"
-      cx="2"
-      cy="7"
-      rx="11"
-      ry="8"
-      stroke-width="1"
-      stroke="#000000"
-      fill="url(#bootGradient)"
-      fill-opacity="1"
-    />
-    <circle
-      :class="oddMoveClass"
-      cx="2"
-      cy="-3"
-      r="8"
-      stroke-width="1"
-      stroke="#000000"
-      fill="url(#bobGradient)"
-      fill-opacity="1"
-    />
-  </g>
+    <g v-if="direction === Direction.Left">
+      <circle
+        :class="evenMoveClass"
+        cx="-28"
+        cy="-45"
+        r="9"
+        stroke-width="1"
+        stroke="#000000"
+        fill="url(#eyeGradientLeft)"
+        fill-opacity="1"
+      />
 
-  <g v-if="direction === Direction.Down">
-    <circle
-      :class="evenMoveClass"
-      cx="28"
-      cy="-45"
-      r="9"
-      stroke-width="1"
-      stroke="#000000"
-      fill="url(#eyeGradientRight)"
-      fill-opacity="1"
-    />
+      <circle
+        cx="-22"
+        cy="-30"
+        r="10"
+        stroke-width="1"
+        stroke="#0000ff"
+        fill="url(#bobGradient)"
+        fill-opacity="1"
+      />
 
-    <circle
-      cx="22"
-      cy="-30"
-      r="10"
-      stroke-width="1"
-      stroke="#000088"
-      fill="url(#bobGradient)"
-      fill-opacity="1"
-    />
-
-    <circle
-      :class="oddMoveClass"
-      cx="8"
-      cy="-40"
-      r="9"
-      stroke-width="1"
-      stroke="#000000"
-      fill="url(#eyeGradientRight)"
-      fill-opacity="1"
-    />
-  </g>
-
-  <g v-if="direction === Direction.Left">
-    <circle
-      :class="evenMoveClass"
-      cx="-28"
-      cy="-45"
-      r="9"
-      stroke-width="1"
-      stroke="#000000"
-      fill="url(#eyeGradientLeft)"
-      fill-opacity="1"
-    />
-
-    <circle
-      cx="-22"
-      cy="-30"
-      r="10"
-      stroke-width="1"
-      stroke="#000088"
-      fill="url(#bobGradient)"
-      fill-opacity="1"
-    />
-
-    <circle
-      :class="oddMoveClass"
-      cx="-8"
-      cy="-40"
-      r="9"
-      stroke-width="1"
-      stroke="#000000"
-      fill="url(#eyeGradientLeft)"
-      fill-opacity="1"
-    />
+      <circle
+        :class="oddMoveClass"
+        cx="-8"
+        cy="-40"
+        r="9"
+        stroke-width="1"
+        stroke="#000000"
+        fill="url(#eyeGradientLeft)"
+        fill-opacity="1"
+      />
+    </g>
   </g>
 </template>
 
@@ -352,10 +360,14 @@ export default {
 }
 
 .oddmove {
-  animation: oddbounce 0.25s infinite alternate ease-in-out;
+  animation: oddbounce 0.3s infinite alternate ease-in-out;
 }
 
 .evenmove {
-  animation: evenbounce 0.25s infinite alternate ease-in-out;
+  animation: evenbounce 0.3s infinite alternate ease-in-out;
+}
+
+.doublespeedmove {
+  animation: oddbounce 0.15s infinite alternate ease-in-out;
 }
 </style>
