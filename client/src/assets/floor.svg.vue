@@ -19,10 +19,12 @@ export default {
     <path d="M -64 0 L 0 -32 L 64 0 L 0 32 L -64 0 Z" />
   </g>
 
-  <g stroke="#303030" fill="#586058" stroke-width="1">
+  <g stroke="#303030" fill="#588858" stroke-width="0" opacity="0.35">
     <path d="M -64 0 L -32 -16 L 0 0 L -32 16 L -64 0 Z" />
     <path d="M 0 0 L 32 -16 L 64 0 L 32 16 L 0 0 Z" />
   </g>
+
+
 
   <g fill="#111111">
     <path d="M -64 0 L 0 32 L 0 64 L -64 32 L -64 0 Z" />

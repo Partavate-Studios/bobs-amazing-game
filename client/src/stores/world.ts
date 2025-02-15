@@ -34,10 +34,10 @@ interface RenderEntity {
   type: EntityType
 }
 
-function mapToRenderLocation(entity:RenderEntity, mapSize:number):Location {
+function mapToRenderLocation(x: number, y:number, mapSize:number):Location {
     return {
-        x: (entity.location.x - entity.location.y) * 64,
-        y: (entity.location.x + entity.location.y -1) * 32 * (mapSize -1) 
+        x: (x - y) * 64,
+        y: (x + y) * 32 - 32 * (mapSize -1) 
     }
 }
 
@@ -48,6 +48,7 @@ export const useWorld = defineStore("world", {
     entityMap: [] as EntityType[][],
     size: 10,
     turnTime: 600,
+    highlightMove: false,
     player: {
       id: 0,
       direction: Direction.Down,
@@ -81,6 +82,7 @@ export const useWorld = defineStore("world", {
       this.player.direction = direction
     },
     move(direction:Direction) {
+      this.highlightMove=false
       if (this.playerMoving) return
       this.turn(direction)
       if (!this.targetEmpty) return
@@ -107,14 +109,13 @@ export const useWorld = defineStore("world", {
     entitiesSortedByY():RenderEntity[] {
       const flatMap = this.entityMap.flatMap((row: EntityType[], x:number) => 
         row.map((entity:EntityType, y:number) => {
-          const baseX = (x - y) * 64  
-          const baseY = (x + y) * 32 - 32 * (this.size -1)
+          const base = mapToRenderLocation(x, y, this.size)
           return {
             type: entity,
             location: { x, y },
             coordinates: {
-              x: entity === EntityType.Player ? baseX + this.playerOffset.x : baseX,
-              y: entity === EntityType.Player ? baseY + this.playerOffset.y : baseY 
+              x: entity === EntityType.Player ? base.x + this.playerOffset.x : base.x,
+              y: entity === EntityType.Player ? base.y + this.playerOffset.y : base.y 
             }
           }
         })
@@ -143,10 +144,10 @@ export const useWorld = defineStore("world", {
       return {x:-1, y:-1}
     },
     targetCoordinates():Location {
-      const l = this.targetLocation
+      const l = mapToRenderLocation(this.targetLocation.x, this.targetLocation.y, this.size)
       return {
-        x: (l.x - l.y) * 64,
-        y: (l.x + l.y) * 32 - 32 * (this.size - 1)
+        x: l.x,
+        y: l.y
       }
     },
     targetEmpty():boolean {

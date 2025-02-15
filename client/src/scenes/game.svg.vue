@@ -22,6 +22,13 @@ export default {
     };
   },
   methods: {
+    hoverOn(Direction:Direction) {
+      this.world.player.direction = Direction
+      this.world.highlightMove = true
+    },
+    hoverOff() {
+      this.world.highlightMove = false
+    }
   },
   beforeMount() {
     this.world.initializeMap();
@@ -33,44 +40,75 @@ export default {
 <template>
   <g v-for="(row, x) in world.terrainMap">
     <g v-for="(entitle, y) in world.terrainMap[x]">
-      <g :transform="'translate(' + (x - y) * 64 + ' ' + ((x + y) * 32 - 32 * (world.size-1)) + ')'">
+      <g :transform="'translate(' + (x - y) * 64 + ' ' + ((x + y) * 32 - 32 * (world.size - 1)) + ')'">
         <floor v-if="world.terrainMap[x][y] === TerrainType.Default" />
         <grass v-if="world.terrainMap[x][y] === TerrainType.Grass" />
       </g>
     </g>
   </g>
 
-  <g v-if="world.targetEmpty && !world.playerMoving" :transform="
-    'translate(' + world.targetCoordinates.x + ' ' + world.targetCoordinates.y + ')'
-  ">
+  <g v-if="world.highlightMove && world.targetEmpty && !world.playerMoving" :transform="'translate(' + world.targetCoordinates.x + ' ' + world.targetCoordinates.y + ')'
+    ">
     <glow />
   </g>
 
   <g v-for="entity in world.entitiesSortedByY">
     <g :transform="'translate(' + entity.coordinates.x + ' ' + entity.coordinates.y + ')'">
-        <wall v-if="entity.type === EntityType.Wall" />
-        <crate v-if="entity.type === EntityType.Crate" />
-        <bush v-if="entity.type === EntityType.Bush" />
-        <g v-if="entity.type === EntityType.Player">
-            <bob :walking="world.playerMoving" :direction="world.player.direction" />
+      <wall v-if="entity.type === EntityType.Wall" />
+      <crate v-if="entity.type === EntityType.Crate" />
+      <bush v-if="entity.type === EntityType.Bush" />
+      <g v-if="entity.type === EntityType.Player">
+        <bob :walking="world.playerMoving" :direction="world.player.direction" />
+      </g>
+
+    </g>
+  </g>
+
+  <g opacity="0.25" v-if="world.highlightMove && world.targetEmpty && !world.playerMoving" :transform="'translate(' + world.targetCoordinates.x + ' ' + world.targetCoordinates.y + ')'
+    ">
+    <glow />
+  </g>
+
+  <g v-for="entity in world.entitiesSortedByY">
+    <g v-if="entity.type === EntityType.Player && !world.playerMoving">
+      <g :transform="'translate(' + entity.coordinates.x + ' ' + entity.coordinates.y + ')'">
+
+        <g transform="translate(0 0)">
+          <rect x="-128" y="-64" width="128" height="64" fill="#000000" opacity="0"
+            @mouseover="hoverOn(Direction.Up)" @mouseout="hoverOff()"
+            @click="world.move(Direction.Up)" class="clickable" />
+
+          <rect x="-128" y="0" width="128" height="64" fill="#000000" opacity="0"
+            @mouseover="hoverOn(Direction.Left)" @mouseout="hoverOff()"
+            @click="world.move(Direction.Left)" class="clickable" />
+
+          <rect x="0" y="-64" width="128" height="64" fill="#000000" opacity="0"
+            @mouseover="hoverOn(Direction.Right)" @mouseout="hoverOff()"
+            @click="world.move(Direction.Right)" class="clickable" />
+            
+          <rect x="0" y="0" width="128" height="64" fill="#000000" opacity="0"
+            @mouseover="hoverOn(Direction.Down)" @mouseout="hoverOff()"
+            @click="world.move(Direction.Down)" class="clickable" />
         </g>
 
+
+
       </g>
+    </g>
   </g>
-  <g transform="translate(-550 -350)">
-    <circle cx="-15" cy="-15" r="15" @click="world.move(Direction.Up)" class="clickable" />
-    <circle cx="-15" cy="15" r="15" @click="world.move(Direction.Left)" class="clickable"  />
-    <circle cx="15" cy="-15" r="15" @click="world.move(Direction.Right)" class="clickable"  />
-    <circle cx="15" cy="15" r="15" @click="world.move(Direction.Down)" class="clickable"  />
+
+  <g v-if="world.targetEmpty && !world.playerMoving" :transform="'translate(' + world.targetCoordinates.x + ' ' + world.targetCoordinates.y + ')'
+    ">
+
   </g>
+
   <g fill="#88ff88" font-size="26px">
-  <text transform="translate(-500 260)">P x:{{ world.playerLocation.x }}, y:{{ world.playerLocation.y }}  </text>
-  <text transform="translate(-500 300)">T x:{{ world.targetLocation.x }}, y:{{ world.targetLocation.y }}  </text>
-  <text transform="translate(-500 340)">{{ world.player.direction }}</text>
-  <text transform="translate(-500 380)">T: {{ clock.gameTimeInSeconds }}</text>
+    <text transform="translate(-500 260)">P x:{{ world.playerLocation.x }}, y:{{ world.playerLocation.y }} </text>
+    <text transform="translate(-500 300)">T x:{{ world.targetLocation.x }}, y:{{ world.targetLocation.y }} </text>
+    <text transform="translate(-500 340)">{{ world.player.direction }}</text>
+    <text transform="translate(-500 380)">T: {{ clock.gameTimeInSeconds }}</text>
   </g>
 
 </template>
 
-<style lang="scss">
-</style>
+<style lang="scss"></style>
