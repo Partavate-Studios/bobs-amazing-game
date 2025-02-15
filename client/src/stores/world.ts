@@ -53,6 +53,7 @@ export const useWorld = defineStore("world", {
       id: 0,
       direction: Direction.Down,
       offset: useTween(0,0,1,0,false,false),
+      pushingTarget: false
     }
   }),
   actions: {
@@ -74,8 +75,12 @@ export const useWorld = defineStore("world", {
       }
       // Everything after this can be removed if we're loading map from data
 
-      this.entityMap[3][5] = EntityType.Player
-      this.entityMap[8][7] = EntityType.Crate
+      this.entityMap[2][2] = EntityType.Player
+      this.entityMap[5][5] = EntityType.Crate
+      this.entityMap[7][7] = EntityType.Crate
+      this.entityMap[5][7] = EntityType.Crate
+      this.entityMap[7][5] = EntityType.Crate
+      this.entityMap[6][6] = EntityType.Bush
     },
     turn(direction:Direction) {
       if (this.playerMoving) return
@@ -85,14 +90,19 @@ export const useWorld = defineStore("world", {
       this.highlightMove=false
       if (this.playerMoving) return
       this.turn(direction)
-      if (!this.targetEmpty) return
-      const target = this.targetLocation
+      if (!this.canMove) return
       const player = this.playerLocation
-      if (target) {
-        this.entityMap[player.x][player.y] = EntityType.Empty
-        this.entityMap[target.x][target.y] = EntityType.Player
-        this.player.offset = useTween(1,0,this.turnTime,0,false,false)
+      const target = this.targetLocation
+      const targetOfTarget = this.targetOfTargetLocation
+      this.player.pushingTarget = false
+      if (this.targetMoveable) {
+        this.entityMap[targetOfTarget.x][targetOfTarget.y] = this.entityMap[target.x][target.y]
+        this.entityMap[target.x][target.y] = EntityType.Empty
+        this.player.pushingTarget = true
       }
+      this.entityMap[player.x][player.y] = EntityType.Empty
+      this.entityMap[target.x][target.y] = EntityType.Player
+      this.player.offset = useTween(1,0,this.turnTime,0,false,false)
     }
   },
   getters: {
@@ -110,12 +120,16 @@ export const useWorld = defineStore("world", {
       const flatMap = this.entityMap.flatMap((row: EntityType[], x:number) => 
         row.map((entity:EntityType, y:number) => {
           const base = mapToRenderLocation(x, y, this.size)
+          const useOffset = (entity === EntityType.Player || 
+            (entity === EntityType.Crate && this.player.pushingTarget &&
+              this.targetLocation.x === x && this.targetLocation.y === y)
+          )
           return {
             type: entity,
             location: { x, y },
             coordinates: {
-              x: entity === EntityType.Player ? base.x + this.playerOffset.x : base.x,
-              y: entity === EntityType.Player ? base.y + this.playerOffset.y : base.y 
+              x: useOffset ? base.x + this.playerOffset.x : base.x,
+              y: useOffset ? base.y + this.playerOffset.y : base.y 
             }
           }
         })
@@ -126,6 +140,25 @@ export const useWorld = defineStore("world", {
     },
     targetLocation():Location {
       let location = this.playerLocation
+
+      switch(this.player.direction) {
+        case Direction.Up: {
+          return {x:location.x-1, y:location.y}
+        }
+        case Direction.Down: {
+          return {x:location.x+1, y:location.y}
+        }
+        case Direction.Right: {
+          return {x:location.x, y:location.y-1}
+        }
+        case Direction.Left: {
+          return {x:location.x, y:location.y+1}
+        }
+      }
+      return {x:-1, y:-1}
+    },
+    targetOfTargetLocation():Location {
+      let location = this.targetLocation
 
       switch(this.player.direction) {
         case Direction.Up: {
@@ -157,6 +190,22 @@ export const useWorld = defineStore("world", {
       }
       return (this.entityMap[target.x][target.y] === EntityType.Empty) 
     },
+    targetOfTargetEmpty():boolean {
+      const target = this.targetOfTargetLocation
+      if ((target.x < 0) || (target.y < 0) || (target.x >= this.size) || (target.y >= this.size)) {
+        return false
+      }
+      return (this.entityMap[target.x][target.y] === EntityType.Empty) 
+    },
+    targetMoveable():boolean {
+      const location = this.targetLocation
+      return (this.entityMap[location.x][location.y] === EntityType.Crate)
+    },
+    canMove():boolean {      
+      if (this.targetEmpty) return true
+      if (this.targetMoveable && this.targetOfTargetEmpty) return true
+      return false
+    },
     playerMoving():boolean {
       return (this.player.offset > 0)
     },
@@ -186,6 +235,9 @@ export const useWorld = defineStore("world", {
         }
       }
       return result
+    },
+    showHighlightedMove():boolean {
+      return (this.highlightMove && !this.playerMoving && this.canMove) 
     }
   },
 });

@@ -47,7 +47,7 @@ export default {
     </g>
   </g>
 
-  <g v-if="world.highlightMove && world.targetEmpty && !world.playerMoving" :transform="'translate(' + world.targetCoordinates.x + ' ' + world.targetCoordinates.y + ')'
+  <g v-if="world.showHighlightedMove" :transform="'translate(' + world.targetCoordinates.x + ' ' + world.targetCoordinates.y + ')'
     ">
     <glow />
   </g>
@@ -64,7 +64,7 @@ export default {
     </g>
   </g>
 
-  <g opacity="0.25" v-if="world.highlightMove && world.targetEmpty && !world.playerMoving" :transform="'translate(' + world.targetCoordinates.x + ' ' + world.targetCoordinates.y + ')'
+  <g opacity="0.25" v-if="world.showHighlightedMove" :transform="'translate(' + world.targetCoordinates.x + ' ' + world.targetCoordinates.y + ')'
     ">
     <glow />
   </g>
