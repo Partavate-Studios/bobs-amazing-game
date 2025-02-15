@@ -34,12 +34,6 @@ export default {
       }
       return "";
     },
-    doubleSpeedMoveClass() {
-      if (this.walking) {
-        return "doublespeedmove";
-      }
-      return "";
-    },
   },
 };
 </script>
@@ -168,7 +162,6 @@ export default {
     </g>
 
     <circle
-      :class="doubleSpeedMoveClass"
       cy="-35"
       r="40"
       stroke-width="1"
@@ -346,7 +339,7 @@ export default {
   }
   50% {
     transform: translateY(-1px);
-  } /* Adjust the distance as needed */
+  }
 }
 
 @keyframes evenbounce {
@@ -356,18 +349,25 @@ export default {
   }
   50% {
     transform: translateY(1px);
-  } /* Adjust the distance as needed */
+  }
+}
+
+@keyframes doublebounce {
+  0%,
+  100% {
+    transform: translateX(-1px);
+  }
+  50% {
+    transform: translateX(1px);
+  }
 }
 
 .oddmove {
-  animation: oddbounce 0.3s infinite alternate ease-in-out;
+  animation: oddbounce 0.15s infinite alternate ease-in-out;
 }
 
 .evenmove {
-  animation: evenbounce 0.3s infinite alternate ease-in-out;
+  animation: evenbounce 0.15s infinite alternate ease-in-out;
 }
 
-.doublespeedmove {
-  animation: oddbounce 0.15s infinite alternate ease-in-out;
-}
 </style>

@@ -39,16 +39,20 @@ export default {
       </g>
     </g>
   </g>
-  <g v-for="(entity, index) in world.entitiesSortedByY">
-    <g :transform="'translate(' + (entity.location.x - entity.location.y) * 64 + ' ' + ((entity.location.x + entity.location.y) * 32 - 32 * (world.size-1)) + ')'">
+
+  <g v-if="world.targetEmpty && !world.playerMoving" :transform="
+    'translate(' + world.targetCoordinates.x + ' ' + world.targetCoordinates.y + ')'
+  ">
+    <glow />
+  </g>
+
+  <g v-for="entity in world.entitiesSortedByY">
+    <g :transform="'translate(' + entity.coordinates.x + ' ' + entity.coordinates.y + ')'">
         <wall v-if="entity.type === EntityType.Wall" />
         <crate v-if="entity.type === EntityType.Crate" />
         <bush v-if="entity.type === EntityType.Bush" />
         <g v-if="entity.type === EntityType.Player">
-          <glow />
-          <g :transform="'translate('+ world.playerOffset.x + ' ' + world.playerOffset.y + ')'">
             <bob :walking="world.playerMoving" :direction="world.player.direction" />
-          </g>
         </g>
 
       </g>
@@ -59,7 +63,12 @@ export default {
     <circle cx="15" cy="-15" r="15" @click="world.move(Direction.Right)" class="clickable"  />
     <circle cx="15" cy="15" r="15" @click="world.move(Direction.Down)" class="clickable"  />
   </g>
-  <text transform="translate(-500 300)">{{ world.playerLocation.x }}, {{ world.playerLocation.y }}, {{ world.player.direction }}, {{ clock.gameTimeInSeconds }}</text>
+  <g fill="#88ff88" font-size="26px">
+  <text transform="translate(-500 260)">P x:{{ world.playerLocation.x }}, y:{{ world.playerLocation.y }}  </text>
+  <text transform="translate(-500 300)">T x:{{ world.targetLocation.x }}, y:{{ world.targetLocation.y }}  </text>
+  <text transform="translate(-500 340)">{{ world.player.direction }}</text>
+  <text transform="translate(-500 380)">T: {{ clock.gameTimeInSeconds }}</text>
+  </g>
 
 </template>
 

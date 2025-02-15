@@ -28,13 +28,13 @@ interface Location {
   y: number
 }
 
-interface Entity {
-    id: number,
-    location: Location,
-    type: EntityType
+interface RenderEntity {
+  location: Location,
+  coordinates: Location,
+  type: EntityType
 }
 
-function mapToRenderLocation(entity:Entity, mapSize:number):Location {
+function mapToRenderLocation(entity:RenderEntity, mapSize:number):Location {
     return {
         x: (entity.location.x - entity.location.y) * 64,
         y: (entity.location.x + entity.location.y -1) * 32 * (mapSize -1) 
@@ -44,9 +44,10 @@ function mapToRenderLocation(entity:Entity, mapSize:number):Location {
 
 export const useWorld = defineStore("world", {
   state: () => ({
-    terrainMap: [] as number[][],
-    entities: [] as Entity[],
+    terrainMap: [] as TerrainType[][],
+    entityMap: [] as EntityType[][],
     size: 10,
+    turnTime: 600,
     player: {
       id: 0,
       direction: Direction.Down,
@@ -55,128 +56,135 @@ export const useWorld = defineStore("world", {
   }),
   actions: {
     initializeMap() {
-      this.terrainMap = Array.from({ length: this.size }, () => Array(this.size).fill(EntityType.Empty));
+      this.terrainMap = Array.from({ length: this.size }, () => 
+        Array(this.size).fill(EntityType.Empty)
+      )
+      this.entityMap = Array.from({ length: this.size }, () => 
+        Array(this.size).fill(EntityType.Empty)
+      )
+
       for (let i=0;i<this.size;i++) {
-        this.entities.push({
-          id: this.entities.length,
-          location: { x:0, y: i },
-          type: EntityType.Wall
-        })
-        this.entities.push({
-          id: this.entities.length,
-          location: { x:this.size-1, y: i },
-          type: EntityType.Wall
-        })
+        this.entityMap[0][i] = EntityType.Wall
+        this.entityMap[this.size-1][i] = EntityType.Wall
       }
       for (let i=1;i<this.size-1;i++) {
-        this.entities.push({
-          id: this.entities.length,
-          location: { x:i, y: 0 },
-          type: EntityType.Wall
-        })
-        this.entities.push({
-          id: this.entities.length,
-          location: { x:i, y: this.size-1 },
-          type: EntityType.Wall
-        })
+        this.entityMap[i][0] = EntityType.Wall
+        this.entityMap[i][this.size-1] = EntityType.Wall
       }
       // Everything after this can be removed if we're loading map from data
 
-      this.player.id = this.entities.push({
-        id: this.entities.length,
-        location: { x:4, y: 4 },
-        type: EntityType.Player
-      })
-      this.entities.push({
-        id: this.entities.length,
-        location: { x:4, y: 7 },
-        type: EntityType.Bush
-      })
+      this.entityMap[3][5] = EntityType.Player
+      this.entityMap[8][7] = EntityType.Crate
+    },
+    turn(direction:Direction) {
+      if (this.playerMoving) return
+      this.player.direction = direction
     },
     move(direction:Direction) {
-      if (this.playerMoving) { 
-        return
-      }
-      this.player.direction = direction
+      if (this.playerMoving) return
+      this.turn(direction)
+      if (!this.targetEmpty) return
       const target = this.targetLocation
-      if (this.targetEmpty) {
-        this.entities[this.playerIndex].location = target
-        this.player.offset = useTween(1,0,1000,0,false,false)
+      const player = this.playerLocation
+      if (target) {
+        this.entityMap[player.x][player.y] = EntityType.Empty
+        this.entityMap[target.x][target.y] = EntityType.Player
+        this.player.offset = useTween(1,0,this.turnTime,0,false,false)
       }
     }
   },
   getters: {
-    entitiesSortedByY():Entity[] {
-      const sorter = function (a, b) {
-        return 
+    playerLocation():Location {
+      for (let x = 0; x < this.entityMap.length; x++) {
+        for (let y = 0; y < this.entityMap[x].length; y++) {
+          if (this.entityMap[x][y] === EntityType.Player) {
+            return {x:x, y:y};
+          }
+        }
       }
-      return this.entities.sort((a:Enity, b:Entity) => {
-        return mapToRenderLocation(a,this.size).y - mapToRenderLocation(b, this.size).y
+      return {x:2, y:2}
+    },
+    entitiesSortedByY():RenderEntity[] {
+      const flatMap = this.entityMap.flatMap((row: EntityType[], x:number) => 
+        row.map((entity:EntityType, y:number) => {
+          const baseX = (x - y) * 64  
+          const baseY = (x + y) * 32 - 32 * (this.size -1)
+          return {
+            type: entity,
+            location: { x, y },
+            coordinates: {
+              x: entity === EntityType.Player ? baseX + this.playerOffset.x : baseX,
+              y: entity === EntityType.Player ? baseY + this.playerOffset.y : baseY 
+            }
+          }
+        })
+      )
+      return flatMap.sort((a:RenderEntity, b:RenderEntity) => {
+        return a.coordinates.y - b.coordinates.y
       })
     },
-    playerIndex():number {
-      return this.entities.findIndex(entity => 
-        entity.type === EntityType.Player
-      )
-    },
-    playerLocation():Location {
-      return this.entities[this.playerIndex].location
-    },
     targetLocation():Location {
-      let target = this.playerLocation
+      let location = this.playerLocation
+
       switch(this.player.direction) {
         case Direction.Up: {
-          return {x: target.x-1, y: target.y}
+          return {x:location.x-1, y:location.y}
         }
         case Direction.Down: {
-            return {x: target.x+1, y: target.y}
+          return {x:location.x+1, y:location.y}
         }
         case Direction.Right: {
-            return {x: target.x, y: target.y-1}
+          return {x:location.x, y:location.y-1}
         }
         case Direction.Left: {
-            return {x: target.x, y: target.y+1}
+          return {x:location.x, y:location.y+1}
         }
       }
-      return target
+      return {x:-1, y:-1}
+    },
+    targetCoordinates():Location {
+      const l = this.targetLocation
+      return {
+        x: (l.x - l.y) * 64,
+        y: (l.x + l.y) * 32 - 32 * (this.size - 1)
+      }
     },
     targetEmpty():boolean {
       const target = this.targetLocation
       if ((target.x < 0) || (target.y < 0) || (target.x >= this.size) || (target.y >= this.size)) {
         return false
       }
-      return (this.terrainMap[target.x][target.y] === EntityType.Empty) 
+      return (this.entityMap[target.x][target.y] === EntityType.Empty) 
     },
     playerMoving():boolean {
       return (this.player.offset > 0)
     },
     playerOffset():Location {
-      let result = {x:0, y:0}
+      let result = {
+        x: 64 * this.player.offset,
+        y: 32 * this.player.offset
+      }
       if (this.player.offset > 0) {
         switch (this.player.direction) {
           case (Direction.Up): {
-            result.x = 64 * this.player.offset
-            result.y = 32 * this.player.offset
             break
           }
           case (Direction.Down): {
-            result.x = -64 * this.player.offset
-            result.y = -32 * this.player.offset
+            result.x = result.x * -1
+            result.y = result.y * -1
             break
           }
           case (Direction.Left): {
-            result.x = 64 * this.player.offset
-            result.y = -32 * this.player.offset
+            result.y = result.y * -1
             break
           }
           case (Direction.Right): {
-            result.x = -64 * this.player.offset
-            result.y = 32 * this.player.offset
+            result.x = result.x * -1
             break
           }
         }
       }
       return result
-    } 
+    }
   },
 });
