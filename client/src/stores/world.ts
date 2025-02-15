@@ -2,10 +2,10 @@ import { defineStore } from "pinia"
 import { useTween } from '../composables/tween.ts'
 
 export enum Direction {
-  Up = "UP",
-  Down = "DOWN",
-  Left = "LEFT",
-  Right = "RIGHT"
+  Up = "U",
+  Down = "D",
+  Left = "L",
+  Right = "R"
 }
 
 export enum TerrainType {
@@ -19,7 +19,8 @@ export enum EntityType {
   Wall = 1,
   Player = 2,
   Crate = 3,
-  Bush = 4
+  Bush = 4,
+  Key = 5
 }
 
 
@@ -53,7 +54,8 @@ export const useWorld = defineStore("world", {
       id: 0,
       direction: Direction.Down,
       offset: useTween(0,0,1,0,false,false),
-      pushingTarget: false
+      pushingTarget: false,
+      turns: [] as Direction[]
     }
   }),
   actions: {
@@ -80,7 +82,7 @@ export const useWorld = defineStore("world", {
       this.entityMap[7][7] = EntityType.Crate
       this.entityMap[5][7] = EntityType.Crate
       this.entityMap[7][5] = EntityType.Crate
-      this.entityMap[6][6] = EntityType.Bush
+      this.entityMap[3][3] = EntityType.Key
     },
     turn(direction:Direction) {
       if (this.playerMoving) return
@@ -103,6 +105,7 @@ export const useWorld = defineStore("world", {
       this.entityMap[player.x][player.y] = EntityType.Empty
       this.entityMap[target.x][target.y] = EntityType.Player
       this.player.offset = useTween(1,0,this.turnTime,0,false,false)
+      this.player.turns.push(direction)
     }
   },
   getters: {

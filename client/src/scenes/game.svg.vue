@@ -6,6 +6,7 @@ import wall from "../assets/wall.svg.vue"
 import crate from "../assets/crate.svg.vue"
 import bush from "../assets/bush.svg.vue"
 import glow from "../assets/glow.svg.vue"
+import key from "../assets/key.svg.vue"
 import { useClock } from "../stores/clock.ts"
 import { useWorld } from "../stores/world.ts"
 import { Direction } from "../stores/world.ts"
@@ -57,6 +58,7 @@ export default {
       <wall v-if="entity.type === EntityType.Wall" />
       <crate v-if="entity.type === EntityType.Crate" />
       <bush v-if="entity.type === EntityType.Bush" />
+      <key v-if="entity.type === EntityType.Key" />
       <g v-if="entity.type === EntityType.Player">
         <bob :walking="world.playerMoving" :direction="world.player.direction" />
       </g>
@@ -107,6 +109,14 @@ export default {
     <text transform="translate(-500 300)">T x:{{ world.targetLocation.x }}, y:{{ world.targetLocation.y }} </text>
     <text transform="translate(-500 340)">{{ world.player.direction }}</text>
     <text transform="translate(-500 380)">T: {{ clock.gameTimeInSeconds }}</text>
+  </g>
+
+
+  <g fill="#8888ff" font-size="20px" :transform="'translate(0 ' + (-20*world.player.turns.length) + ')'">
+    <text v-for="(turn, index) in world.player.turns" 
+      text-anchor="start"
+      :opacity = "Math.max(index + 6 - world.player.turns.length, 0) / 5 "
+      :transform="'translate(400 ' + (-200 + index * 20) + ')'">{{index }}: {{ turn }}</text>
   </g>
 
 </template>
