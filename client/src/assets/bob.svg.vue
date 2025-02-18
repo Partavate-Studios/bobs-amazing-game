@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Direction } from "../stores/world";
+import { Direction } from "../libs/enums.ts";
 </script>
 
 <script lang="ts">
@@ -39,11 +39,6 @@ export default {
 </script>
 
 <template>
-  <radialGradient id="shadowGradient">
-    <stop offset="0%" stop-color="#000000" stop-opacity="0.5" />
-    <stop offset="75%" stop-color="#000000" stop-opacity="0.5" />
-    <stop offset="100%" stop-color="#000000" stop-opacity="0" />
-  </radialGradient>
   <radialGradient id="bobGradient" cx="65%" cy="35%">
     <stop offset="0%" stop-color="#4444ff" stop-opacity="1" />
     <stop offset="50%" stop-color="#0000ff" stop-opacity="1" />
