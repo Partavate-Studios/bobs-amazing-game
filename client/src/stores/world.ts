@@ -1,45 +1,11 @@
 import { defineStore } from "pinia"
-import { useTween } from '../composables/tween.ts'
-
-export enum Direction {
-  Up = "UP",
-  Down = "DOWN",
-  Left = "LEFT",
-  Right = "RIGHT"
-}
-
-export enum TerrainType {
-  Default = 0,
-  Water = 1,
-  Grass = 2
-}
-
-export enum EntityType {
-  Empty = 0,
-  Wall = 1,
-  Player = 2,
-  Crate = 3,
-  Bush = 4
-}
-
-
-interface Location {
-  x: number,
-  y: number
-}
-
-interface RenderEntity {
-  location: Location,
-  coordinates: Location,
-  type: EntityType
-}
-
-function mapToRenderLocation(x: number, y:number, mapSize:number):Location {
-    return {
-        x: (x - y) * 64,
-        y: (x + y) * 32 - 32 * (mapSize -1) 
-    }
-}
+import { useTween } from '@/composables/tween.ts'
+import { Direction } from '@/libs/enums.ts'
+import { TerrainType } from '@/libs/enums.ts'
+import { EntityType } from '@/libs/enums.ts'
+import { mapToRenderLocation } from "@/libs/helpers.ts"
+import type { Location } from '@/libs/interfaces.ts'
+import type { RenderEntity } from '@/libs/interfaces.ts'
 
 
 export const useWorld = defineStore("world", {
@@ -53,7 +19,12 @@ export const useWorld = defineStore("world", {
       id: 0,
       direction: Direction.Down,
       offset: useTween(0,0,1,0,false,false),
-      pushingTarget: false
+      movingTarget: false,
+      grabbingKey: false,
+      openingDoor: false,
+      turns: [] as Direction[],
+      hasKey: false,
+      won: false
     }
   }),
   actions: {
@@ -80,7 +51,8 @@ export const useWorld = defineStore("world", {
       this.entityMap[7][7] = EntityType.Crate
       this.entityMap[5][7] = EntityType.Crate
       this.entityMap[7][5] = EntityType.Crate
-      this.entityMap[6][6] = EntityType.Bush
+      this.entityMap[3][3] = EntityType.Key
+      this.entityMap[0][5] = EntityType.Door
     },
     turn(direction:Direction) {
       if (this.playerMoving) return
@@ -94,15 +66,47 @@ export const useWorld = defineStore("world", {
       const player = this.playerLocation
       const target = this.targetLocation
       const targetOfTarget = this.targetOfTargetLocation
-      this.player.pushingTarget = false
+      
       if (this.targetMoveable) {
         this.entityMap[targetOfTarget.x][targetOfTarget.y] = this.entityMap[target.x][target.y]
         this.entityMap[target.x][target.y] = EntityType.Empty
-        this.player.pushingTarget = true
+        this.player.movingTarget = true
       }
-      this.entityMap[player.x][player.y] = EntityType.Empty
-      this.entityMap[target.x][target.y] = EntityType.Player
-      this.player.offset = useTween(1,0,this.turnTime,0,false,false)
+      if (this.targetIsDoor && this.player.hasKey) {
+        this.player.offset = useTween(1,0,this.turnTime,0,false,false, () => {this.updateMoveResults()})
+        this.player.openingDoor = true
+      }
+      if (this.targetIsKey) {
+        this.player.offset = useTween(1,0,this.turnTime,0,false,true, () => {this.updateMoveResults()})
+        this.player.grabbingKey = true
+        this.player.hasKey = true
+        //setTimeout(() => {, this.turnTime);
+      }
+      if (this.targetMoveable || this.targetEmpty) {
+        this.entityMap[player.x][player.y] = EntityType.Empty
+        this.entityMap[target.x][target.y] = EntityType.Player
+        this.player.offset = useTween(1,0,this.turnTime,0,false,false)
+      }
+      this.player.turns.push(direction)
+      
+    },
+    updateMoveResults() {
+      console.log('test')
+      const target = this.targetLocation
+      //remove key
+      if (this.player.hasKey) {
+        console.log('has key')
+        if (this.targetIsKey) {
+          console.log('removing key')          
+          this.entityMap[target.x][target.y] = EntityType.Empty
+        }
+      }
+      if (this.player.openingDoor) {
+        this.player.won = true
+      }
+      this.player.grabbingKey = false
+      this.player.movingTarget = false
+      //
     }
   },
   getters: {
@@ -121,7 +125,7 @@ export const useWorld = defineStore("world", {
         row.map((entity:EntityType, y:number) => {
           const base = mapToRenderLocation(x, y, this.size)
           const useOffset = (entity === EntityType.Player || 
-            (entity === EntityType.Crate && this.player.pushingTarget &&
+            (entity === EntityType.Crate && this.player.movingTarget &&
               this.targetLocation.x === x && this.targetLocation.y === y)
           )
           return {
@@ -201,19 +205,52 @@ export const useWorld = defineStore("world", {
       const location = this.targetLocation
       return (this.entityMap[location.x][location.y] === EntityType.Crate)
     },
+    targetIsKey():boolean {
+      const location = this.targetLocation
+      return (this.entityMap[location.x][location.y] === EntityType.Key)
+    },
+    targetIsDoor():boolean {
+      const location = this.targetLocation
+      return (this.entityMap[location.x][location.y] === EntityType.Door)
+    },
     canMove():boolean {      
+      if (this.playerMoving) return false
+      if (this.player.openingDoor) return false
+      if (this.player.grabbingKey) return false
       if (this.targetEmpty) return true
       if (this.targetMoveable && this.targetOfTargetEmpty) return true
+      if (this.targetIsKey) return true
+      if (this.targetIsDoor && this.player.hasKey) return true
       return false
     },
     playerMoving():boolean {
       return (this.player.offset > 0)
     },
+    showHighlightedMove():boolean {
+      return (this.highlightMove && this.canMove) 
+    },
     playerOffset():Location {
       let result = {
-        x: 64 * this.player.offset,
-        y: 32 * this.player.offset
+        x: 0,
+        y: 0
       }
+      if (this.player.grabbingKey) {
+        result = {
+          x: -32 * this.player.offset,
+          y: -16 * this.player.offset
+        }
+      } else if (this.player.openingDoor) {
+        result = {
+          x: -32 + 32 * this.player.offset,
+          y: -16 + 16 * this.player.offset
+        }
+      } else {
+        result = {
+          x: 64 * this.player.offset,
+          y: 32 * this.player.offset
+        }
+      }
+
       if (this.player.offset > 0) {
         switch (this.player.direction) {
           case (Direction.Up): {
@@ -236,8 +273,5 @@ export const useWorld = defineStore("world", {
       }
       return result
     },
-    showHighlightedMove():boolean {
-      return (this.highlightMove && !this.playerMoving && this.canMove) 
-    }
   },
 });

@@ -15,7 +15,7 @@ export default {
 </script>
 
 <template>
-  <g transform="scale(0.1)">
+  <g transform="scale(0.11)">
     <g stroke-opacity="0.1">
       <g transform="translate(0 0)">
         <ellipse cx="-80" cy="0" rx="550" ry="300" stroke-width="0" stroke="#000000" fill="url(#shadowGradient)"

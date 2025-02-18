@@ -11,30 +11,40 @@ export function useTween(
   duration:number=2000,
   easing:number=0,
   loop:boolean=false,
-  pingpong:boolean=false
+  pingpong:boolean=false,
+  callback?: () => void
 ):number {
 
   const clock = useClock()
   const startTime = clock.gameTime
-
   const currentValue = ref(0)
+  let complete = false
 
   function percentage() {
     if (duration <=0) return 1
+    if (complete) return 1
 
     const elapsed = (clock.gameTime - startTime)
     let percentage = (elapsed / duration)
     if (loop) {
       percentage = percentage % 1
-    } else if (pingpong) {
-      if (Math.floor(percentage) % 2 == 0) { //even
-        percentage = percentage % 1
-      } else { //odd
-        percentage = (1 - percentage % 1)
-      }
     } else {
       percentage = Math.min(1, percentage)
+      if (percentage === 1) {
+        complete = true 
+        if (callback && typeof callback === "function") {
+          callback()
+        }
+      }
     }
+    if (pingpong) {
+      if (percentage > 0.5) {
+        percentage = percentage
+      } else { 
+        percentage = (1 - percentage)
+      }
+    }
+
     return percentage
   }
 
