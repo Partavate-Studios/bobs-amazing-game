@@ -37,12 +37,12 @@ export const useWorld = defineStore("world", {
       )
 
       for (let i=0;i<this.size;i++) {
-        this.entityMap[0][i] = EntityType.Wall
-        this.entityMap[this.size-1][i] = EntityType.Wall
+        this.entityMap[0][i] = EntityType.Bush
+        this.entityMap[this.size-1][i] = EntityType.Bush
       }
       for (let i=1;i<this.size-1;i++) {
-        this.entityMap[i][0] = EntityType.Wall
-        this.entityMap[i][this.size-1] = EntityType.Wall
+        this.entityMap[i][0] = EntityType.Bush
+        this.entityMap[i][this.size-1] = EntityType.Bush
       }
       // Everything after this can be removed if we're loading map from data
 

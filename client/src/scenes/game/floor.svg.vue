@@ -25,7 +25,7 @@ export default {
   <g v-for="(row, x) in world.terrainMap">
     <g v-for="(entitle, y) in world.terrainMap[x]">
       <g :transform="'translate(' + (x - y) * 64 + ' ' + ((x + y) * 32 - 32 * (world.size - 1)) + ')'">
-        <tile v-if="world.terrainMap[x][y] === TerrainType.Default" />
+        <grass v-if="world.terrainMap[x][y] === TerrainType.Default" />
         <grass v-if="world.terrainMap[x][y] === TerrainType.Grass" />
       </g>
     </g>
