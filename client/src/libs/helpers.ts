@@ -1,3 +1,5 @@
+import type { Location } from './interfaces'
+
 export function mapToRenderLocation(x: number, y:number, mapSize:number):Location {
     return {
         x: (x - y) * 64,

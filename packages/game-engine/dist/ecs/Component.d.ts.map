@@ -1,0 +1,1 @@
+{"version":3,"file":"Component.d.ts","sourceRoot":"","sources":["../../src/ecs/Component.ts"],"names":[],"mappings":"AAAA;;;GAGG;AACH,8BAAsB,SAAS;IACtB,QAAQ,EAAE,MAAM,CAAA;gBAEX,QAAQ,EAAE,MAAM;CAG7B"}

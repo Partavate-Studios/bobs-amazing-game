@@ -1,0 +1,1 @@
+{"version":3,"file":"Player.d.ts","sourceRoot":"","sources":["../../../src/ecs/components/Player.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,SAAS,EAAE,MAAM,cAAc,CAAA;AAExC;;GAEG;AACH,qBAAa,MAAO,SAAQ,SAAS;IAC5B,MAAM,EAAE,OAAO,CAAQ;IACvB,GAAG,EAAE,OAAO,CAAQ;IACpB,WAAW,EAAE,OAAO,CAAQ;IAC5B,WAAW,EAAE,OAAO,CAAQ;IAC5B,YAAY,EAAE,OAAO,CAAQ;gBAExB,QAAQ,EAAE,MAAM;CAG7B"}

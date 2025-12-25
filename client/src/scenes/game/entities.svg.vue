@@ -34,7 +34,7 @@ export default {
         <crate v-if="entity.type === EntityType.Crate" />
         <bush v-if="entity.type === EntityType.Bush" />
         <door v-if="entity.type === EntityType.Door"
-            :open="world.player.openingDoor ? world.player.offset : 1" />
+            :open="entity.entityId ? world.getDoorOpenProgress(entity.entityId) : 1" />
         <key v-if="entity.type === EntityType.Key" 
             :size="(world.player.grabbingKey) ? world.player.offset * 3 + 0.5 : 1 "  />
         <g v-if="entity.type === EntityType.Player">

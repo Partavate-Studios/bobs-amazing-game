@@ -22,18 +22,13 @@ export default {
 </script>
 
 <template>
-  <g v-for="(row, x) in world.terrainMap">
-    <g v-for="(entitle, y) in world.terrainMap[x]">
+  <!-- Generate floor tiles based on map size -->
+  <g v-for="x in Array(world.size).fill(0).map((_, i) => i)" :key="'row-' + x">
+    <g v-for="y in Array(world.size).fill(0).map((_, i) => i)" :key="'tile-' + x + '-' + y">
       <g :transform="'translate(' + (x - y) * 64 + ' ' + ((x + y) * 32 - 32 * (world.size - 1)) + ')'">
-        <tile v-if="world.terrainMap[x][y] === TerrainType.Default" />
-        <grass v-if="world.terrainMap[x][y] === TerrainType.Grass" />
+        <grass />
       </g>
     </g>
-  </g>
-
-  <g v-if="world.showHighlightedMove" :transform="'translate(' + world.targetCoordinates.x + ' ' + world.targetCoordinates.y + ')'
-    ">
-    <glow />
   </g>
 </template>
 

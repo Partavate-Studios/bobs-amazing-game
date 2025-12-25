@@ -1,0 +1,54 @@
+{
+  "name": "@bobs-game/game-engine",
+  "version": "0.1.0",
+  "description": "Entity Component System game engine for Vue 3",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./ecs": {
+      "import": "./dist/ecs/index.js",
+      "types": "./dist/ecs/index.d.ts"
+    },
+    "./components": {
+      "import": "./dist/components/index.js",
+      "types": "./dist/components/index.d.ts"
+    },
+    "./systems": {
+      "import": "./dist/systems/index.js",
+      "types": "./dist/systems/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build && tsc --emitDeclarationOnly --outDir dist",
+    "dev": "vite build --watch",
+    "type-check": "vue-tsc --noEmit"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.1",
+    "typescript": "~5.7.3",
+    "vite": "^6.0.11",
+    "vite-plugin-dts": "^4.3.0",
+    "vue-tsc": "^2.2.0"
+  },
+  "keywords": [
+    "vue",
+    "game",
+    "ecs",
+    "entity-component-system",
+    "game-engine"
+  ],
+  "license": "MIT"
+}
+

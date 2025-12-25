@@ -1,0 +1,1 @@
+{"version":3,"file":"Collectible.d.ts","sourceRoot":"","sources":["../../../src/ecs/components/Collectible.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,SAAS,EAAE,MAAM,cAAc,CAAA;AAExC;;GAEG;AACH,qBAAa,WAAY,SAAQ,SAAS;IACjC,SAAS,EAAE,OAAO,CAAQ;gBAErB,QAAQ,EAAE,MAAM;CAG7B"}

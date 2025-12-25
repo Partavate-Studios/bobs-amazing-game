@@ -46,12 +46,13 @@ export default {
 </script>
 
 <template>
-  <g transform="translate(0 -200)" stroke="#8888ff" fill="#ffffff" font-size="120px" stroke-width="3">
-    <text font-weight="bold">Bob's Amazing Game</text>
+  <g transform="translate(0 -200)" stroke="#8888ff" font-weight="bold" fill="#ffffff" font-size="110px" stroke-width="3">
+    <text transform="translate(0, -75)">Bob's</text>
+    <text transform="translate(0, 75)" font-weight="bold">Amazing Game</text>
   </g>
-  <g transform="translate(-400 50) scale(1.75)"><bob /></g>
+  <g transform="translate(-200 150) scale(1.75)"><bob /></g>
 
-  <g transform="translate(0 0)" font-size="70px">
+  <g transform="translate(150 150)" font-size="70px">
     <rect x="-200" y="-50" width="400" height="100" rx="40" ry="40" stroke-width="3" :stroke="buttonStroke" :fill="buttonFill" />
     <text font-weight="bold" :stroke="buttonTextStroke" :fill="buttonTextFill" >Play</text>
     <rect x="-200" y="-50" width="400" height="100" opacity="0" class="clickable" @click="play" @mouseover="hoverPlay = true" @mouseout="hoverPlay = false" />

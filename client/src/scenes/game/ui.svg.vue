@@ -13,8 +13,8 @@ export default {
     };
   },
   methods: {
-    hoverOn(Direction:Direction) {
-      this.world.player.direction = Direction
+    hoverOn(direction:Direction) {
+      this.world.turn(direction)
       this.world.highlightMove = true
     },
     hoverOff() {

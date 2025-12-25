@@ -8,5 +8,6 @@ export interface Location {
 export interface RenderEntity {
   location: Location,
   coordinates: Location,
-  type: EntityType
+  type: EntityType,
+  entityId?: number
 }
